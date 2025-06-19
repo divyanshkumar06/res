@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 interface UserType {
   name: string;
   email: string;
-  createdAt: string | Date; // ✅ added createdAt
+  createdAt: string | Date;
 }
 
 interface Order {
@@ -45,7 +45,11 @@ interface Booking {
 }
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, logout } = useAuthStore() as { user: UserType; isAuthenticated: boolean; logout: () => void };
+  const authState = useAuthStore();
+  const user = authState.user as UserType | null;
+  const isAuthenticated = authState.isAuthenticated;
+  const logout = authState.logout;
+  
   const router = useRouter();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -178,7 +182,7 @@ export default function DashboardPage() {
           <StatCard
             icon={<User className="h-8 w-8 text-amber-600" />}
             title="Member Since"
-            value={formatDate(user.createdAt.toString())}
+            value={user.createdAt ? formatDate(user.createdAt.toString()) : 'N/A'}
           />
         </div>
 
